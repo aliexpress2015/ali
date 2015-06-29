@@ -1,0 +1,44 @@
+#!/bin/bash
+
+echo -e "Seleccionar opción: \n1. Eliminar \n2. Modificar \n3. Ingresar"
+read op1
+ls > .temp
+cont=0
+while read line
+do
+	let cont=cont+1
+	echo "$cont. $line" >> .temp2
+done < .temp
+if [ $op1 = 1 ]
+        then
+                echo  Seleccionar registro a eliminar:
+                cat .temp2
+		read op2
+		reg=$(cat .temp2 | grep -w $op2. |awk -F " " '{print $2}')
+		rm -f $reg .temp .temp2
+		echo Registro $reg eliminado.
+		exit
+elif [ $op1 = 2 ]
+	then
+        	echo Seleccionar registro a modificar:
+		cat .temp2
+		read op2
+		reg=$(cat .temp2 | grep -w $op2. |awk -F " " '{print $2}')
+		url=$(cat -- "$reg" | grep -a jpg | awk '{print $2}' | sed 's/^.//' | sed 's/.jpg/ /g' | awk '{print $1}')
+		sed -i 's/$url.jpg/http:\/\/g02.s.alicdn.com\/kf\/HTB11NMxHFXXXXXGXFXXq6xXFXXX7\/Steelmate-Ebat-PTS2C2-LED-display-parking-sensor.jpg/g' $reg
+		rm -f .temp .temp2	
+		echo Registro $reg modificado.
+		exit
+else
+	echo Registro a replicar:
+	cat .temp2
+	read op2	
+	reg=$(cat .temp2 | grep -w $op2. |awk -F " " '{print $2}')
+	echo Nuevo nombre del registro:
+	read name
+	cp $reg ./name
+	rm -f .temp .temp2
+	echo Registro replicado.
+fi
+
+exit
